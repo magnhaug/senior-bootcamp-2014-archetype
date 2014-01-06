@@ -48,8 +48,10 @@ app.get('/gui', function(req, res) {
 app.get('/messages', function(req, res) {
   getUrl(
     serviceurl + '/api/messages',
-    function(body) {
-      res.json(body);
+    function(messages) {
+    	enrichMessages(messages,function(messages) {
+	      res.json(messages);
+    	});
     }
   );
 });
@@ -66,6 +68,23 @@ app.get('/message/:id', function(req, res) {
     }
   );
 });
+
+
+function enrichMessages(messages, func) {
+  var remainingCalls = messages.length;
+
+  function decrementAndCommit(){
+    remainingCalls = remainingCalls-1;
+    if (remainingCalls == 0){
+      func(messages);
+    }
+  }
+
+  messages.forEach(function (message) {
+  	enrichMessage(message,decrementAndCommit);
+  });
+
+}
 
 function enrichMessage(message, func) {
   var remainingCalls = 2;
