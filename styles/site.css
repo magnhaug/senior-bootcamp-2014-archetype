@@ -1,0 +1,80 @@
+html{
+	-webkit-font-smoothing: antialiased;
+}
+
+body{
+	font-family: 'museo_sans300', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 15px;
+}
+
+.content{
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+.main-header{
+	text-align: center;
+	text-transform: uppercase;
+	font-family: 'museo_sans100', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 40px;
+}
+
+ul{
+	list-style-type: none;
+	padding: 0;
+}
+
+.post{
+	margin-bottom: 100px;
+}
+
+.user{
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.text{
+	position: relative;
+	background: rgba(198, 222, 228, 0.61);
+	padding: 30px;
+}
+
+.text:before, .text:after{
+	content: "\"";
+	color: rgba(198, 222, 228, 0.61);
+	position: absolute;
+	font-weight: bold;
+	font-weight: bold;
+	font-size: 100px;
+	font-family: 'museo_sans100', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-style: italic;
+}
+
+.text:before{
+	top: -20px;
+	left: -45px;
+}
+
+.text:after{
+	bottom: -90px;
+	right: -30px;
+}
+
+.likes{
+	color: rgb(187, 36, 36);
+	font-weight: bold;
+	padding-left: 30px;
+}
+
+.comments{
+	margin-top: 20px;
+	padding: 0px 30px;
+}
+
+.comments li {
+	margin-bottom: 15px;
+}
+
+.commenter-name{
+	font-weight: bold;
+}
