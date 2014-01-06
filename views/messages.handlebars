@@ -2,24 +2,27 @@
 <html>
     <head>
         <title>NEI!</title>
+        <link rel="stylesheet" type="text/css" href="/styles/fonts.css">
+        <link rel="stylesheet" type="text/css" href="/styles/site.css">
     </head>
     <body>
-        <section>
-            <h1>Socialcast posts</h1>
+        <section class="content">
+            <h1 class="main-header">Socialcast posts</h1>
             <ul>
                 {{#each posts}}
-                <li>
+                <li class="post">
                     <section>
                     <div class="user">
                         <span>{{user.name}}</span>
                     </div>
-                    <div class="post">
-                        <p>{{body}}</p>
+                    <p class="text">{{body}}</p>
+                    <div class="likes">
+                        <span>❤ {{likes.length}}</span>
                     </div>
                     <div class="comments">
                         <ul>
                             {{#each comments}}
-                            <li>{{user.name}}: {{text}}</li>
+                            <li><span class="commenter-name">{{user.name}}</span>: {{text}}</li>
                             {{/each}}
                         </ul>
                     </div>

@@ -14,6 +14,7 @@ var demo_url = "https://api.github.com/users/bekkopen/repos";
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
+app.use(express.static(__dirname + '/'));
 
 var alle_ansatte = [];
 
@@ -39,7 +40,10 @@ app.get('/gui', function(req, res) {
   getUrl(
     serviceurl + '/api/messages',
     function(body) {
-      res.render('messages', {posts: body});
+      enrichMessages(body,function(messages) {
+        res.render('messages', {posts: messages});
+      });
+
     }
   );
 });
