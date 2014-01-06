@@ -48,6 +48,39 @@ app.get('/message/:id', function(req, res) {
   );
 });
 
+// ALLE BRUKERE
+app.get('/users', function(req, res) {
+  get_socialcast(
+    serviceurl + '/api/users',
+    function(body) {
+      res.json(body);
+    }
+  );
+});
+
+// ENKELT BRUKER
+app.get('/user/:id', function(req, res) {
+  var userid = req.params.id;
+  get_socialcast(
+    serviceurl + '/api/users/' + userid,
+    function(body) {
+      res.json(body);
+    }
+  );
+});
+
+// SEARCH 
+app.get('/search', function(req, res) {
+  var searchstring = req.query.q;
+  get_socialcast(
+    serviceurl + '/api/search?q=' + searchstring,
+    function(body) {
+      res.json(body);
+    }
+  );
+});
+
+
 function get_socialcast(url, func){
 
   request.get({
