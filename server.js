@@ -29,32 +29,29 @@ app.get('/', function(req, res) {
 
 // ALLE MELDINGER
 app.get('/messages', function(req, res) {
-  request.get({
-    url: serviceurl + '/api/messages',
-    json: true,
-    auth: {
-        user: userpass,
-        pass: userpass,
-        sendImmediately: false
-    },
-    headers: {
-      'User-Agent': 'request'
+  get_socialcast(
+    serviceurl + '/api/messages',
+    function(body) {
+      res.json(body);
     }
-  },
-  function(error, response, body) {
-    if(error) {
-      console.log("an error has occured. keep calm and carry on.", error);
-    }
-    res.json(body);
-  });
+  );
 });
 
 // ENKELT MELDING
 app.get('/message/:id', function(req, res) {
   var messageid = req.params.id;
+  get_socialcast(
+    serviceurl + '/api/messages/' + messageid,
+    function(body) {
+      res.json(body);
+    }
+  );
+});
+
+function get_socialcast(url, func){
 
   request.get({
-    url: serviceurl + '/api/messages/' + messageid,
+    url: url,
     json: true,
     auth: {
         user: userpass,
@@ -69,8 +66,8 @@ app.get('/message/:id', function(req, res) {
     if(error) {
       console.log("an error has occured. keep calm and carry on.", error);
     }
-    res.json(body);
+    func(body);
   });
-});
+}
 
 app.listen(port);
