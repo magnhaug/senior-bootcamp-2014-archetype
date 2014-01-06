@@ -1,7 +1,8 @@
 
 var express = require('express');
 var request = require('request');
-var exphbs  = require('express3-handlebars')
+var exphbs  = require('express3-handlebars');
+var cache = require('memory-cache');
 var app = express();
 
 process.setMaxListeners(0);
@@ -109,15 +110,25 @@ function enrichMessage(message, func) {
 }
 
 function enrichMessageWithLikes(message, func) {
-	var timeId = "Likes_" + message.id + "_" + (new Date()).getTime(); 
-  console.time(timeId);
-  getUrl(
-    serviceurl + "/api/messages/" + message.id + "/likes",
-    function(likes){
-      message.likes = likes;
-      func(message);
-      console.timeEnd(timeId);
-    });
+	var cacheKey = "Likes_" + message.id;
+	var timeId = "Likes_" + message.id + "_" + (new Date()).getTime();
+
+  	console.time(timeId);
+  	var cacheLikes = cache.get(cacheKey);
+
+  	if(cacheLikes) {
+		func(message);
+	    console.timeEnd(timeId);
+  	}else {
+	  getUrl(
+	    serviceurl + "/api/messages/" + message.id + "/likes",
+	    function(likes){
+	    	cache.put(cacheKey, likes,1000*60*15);
+	      	message.likes = likes;
+	      	func(message);
+	      	console.timeEnd(timeId);
+	    });
+	}
 }
 
 function enrichMessageWithUser(message, func) {
@@ -147,6 +158,7 @@ function get_userId(username){
            elem.Name.indexOf(navn[navn.length-1]) >= 0;
   });
   if (kandidater == null || kandidater.length < 1){
+  	console.warn("Unable to find: ",username);
     return;
   }
 
