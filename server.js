@@ -7,12 +7,15 @@ var app = express();
 // if on heroku use heroku port.
 var port = process.env.PORT || 1339;
 var serviceurl = process.env.SERVICE;
+var ansattlisteurl = process.env.ANSATTLISTE;
 var userpass = process.env.USERPASS;
 
 var demo_url = "https://api.github.com/users/bekkopen/repos";
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
+
+var alle_ansatte = [];
 
 // ROT-url
 app.get('/', function(req, res) {
@@ -33,17 +36,17 @@ app.get('/', function(req, res) {
 
 // GUI FOR ALLE MELDINGER
 app.get('/gui', function(req, res) {
-  get_socialcast(
+  getUrl(
     serviceurl + '/api/messages',
     function(body) {
-      res.render('messages', body);
+      res.render('messages', {posts: body});
     }
   );
 });
 
 // ALLE MELDINGER
 app.get('/messages', function(req, res) {
-  get_socialcast(
+  getUrl(
     serviceurl + '/api/messages',
     function(body) {
       res.json(body);
@@ -54,17 +57,49 @@ app.get('/messages', function(req, res) {
 // ENKELT MELDING
 app.get('/message/:id', function(req, res) {
   var messageid = req.params.id;
-  get_socialcast(
+  getUrl(
     serviceurl + '/api/messages/' + messageid,
-    function(body) {
-      res.json(body);
+    function(message) {
+
+      var username = message.user.name;
+      console.log("beriker bruker", username);
+
+      var userId = get_userId(username);
+      console.log("bruker-id", userId);
+
+      getUrl(
+        ansattlisteurl + "/employee/" + userId,
+        function(user){
+
+          user = user[0];
+          message.user.avdeling = user.Department;
+          message.user.senioritet = user.Seniority;
+
+          console.log(user);
+          console.log(message);
+          res.json(message);
+        });
     }
   );
 });
 
+function get_userId(username){
+  var navn = username.split(" ");
+  var kandidater = alle_ansatte.filter(function( elem ) {
+    return elem.Name.indexOf(navn[0]) >= 0 &&
+           elem.Name.indexOf(navn[navn.length-1]) >= 0;
+  });
+  if (kandidater == null || kandidater.length < 1){
+    return;
+  }
+
+  var kandidat = kandidater[0];
+  return kandidat.Id;
+}
+
 // ALLE BRUKERE
 app.get('/users', function(req, res) {
-  get_socialcast(
+  getUrl(
     serviceurl + '/api/users',
     function(body) {
       res.json(body);
@@ -75,7 +110,7 @@ app.get('/users', function(req, res) {
 // ENKELT BRUKER
 app.get('/user/:id', function(req, res) {
   var userid = req.params.id;
-  get_socialcast(
+  getUrl(
     serviceurl + '/api/users/' + userid,
     function(body) {
       res.json(body);
@@ -86,7 +121,7 @@ app.get('/user/:id', function(req, res) {
 // SEARCH 
 app.get('/search', function(req, res) {
   var searchstring = req.query.q;
-  get_socialcast(
+  getUrl(
     serviceurl + '/api/search?q=' + searchstring,
     function(body) {
       res.json(body);
@@ -95,7 +130,7 @@ app.get('/search', function(req, res) {
 });
 
 
-function get_socialcast(url, func){
+function getUrl(url, func){
 
   request.get({
     url: url,
@@ -116,5 +151,20 @@ function get_socialcast(url, func){
     func(body);
   });
 }
+
+request.get({
+    url: ansattlisteurl + "/all",
+    json: true,
+    headers: {
+      'User-Agent': 'request'
+    }
+  },
+  function(error, response, body){
+    if(error) {
+      console.log("an error has occured. keep calm and carry on.", error);
+    }
+    alle_ansatte = body;
+  }
+);
 
 app.listen(port);

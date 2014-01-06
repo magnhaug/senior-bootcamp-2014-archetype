@@ -7,7 +7,7 @@
         <section>
             <h1>Socialcast posts</h1>
             <ul>
-                {{each posts}}
+                {{#each posts}}
                 <li>
                     <section>
                     <div class="user">
@@ -18,8 +18,8 @@
                     </div>
                     <div class="comments">
                         <ul>
-                            {{each comments}}
-                            <li>{{name}}: {{text}}</li>
+                            {{#each comments}}
+                            <li>{{user.name}}: {{text}}</li>
                             {{/each}}
                         </ul>
                     </div>
