@@ -10,6 +10,7 @@ var userpass = process.env.USERPASS;
 
 var demo_url = "https://api.github.com/users/bekkopen/repos";
 
+// ROT-url
 app.get('/', function(req, res) {
   request.get({
     url: demo_url,
@@ -26,9 +27,34 @@ app.get('/', function(req, res) {
   });
 });
 
+// ALLE MELDINGER
 app.get('/messages', function(req, res) {
   request.get({
     url: serviceurl + '/api/messages',
+    json: true,
+    auth: {
+        user: userpass,
+        pass: userpass,
+        sendImmediately: false
+    },
+    headers: {
+      'User-Agent': 'request'
+    }
+  },
+  function(error, response, body) {
+    if(error) {
+      console.log("an error has occured. keep calm and carry on.", error);
+    }
+    res.json(body);
+  });
+});
+
+// ENKELT MELDING
+app.get('/message/:id', function(req, res) {
+  var messageid = req.params.id;
+
+  request.get({
+    url: serviceurl + '/api/messages/' + messageid,
     json: true,
     auth: {
         user: userpass,
