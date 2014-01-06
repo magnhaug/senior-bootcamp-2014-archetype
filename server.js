@@ -1,6 +1,7 @@
 
 var express = require('express');
 var request = require('request');
+var exphbs  = require('express3-handlebars')
 var app = express();
 
 // if on heroku use heroku port.
@@ -9,6 +10,9 @@ var serviceurl = process.env.SERVICE;
 var userpass = process.env.USERPASS;
 
 var demo_url = "https://api.github.com/users/bekkopen/repos";
+
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 // ROT-url
 app.get('/', function(req, res) {
@@ -25,6 +29,16 @@ app.get('/', function(req, res) {
     }
     res.json(body);
   });
+});
+
+// GUI FOR ALLE MELDINGER
+app.get('/gui', function(req, res) {
+  get_socialcast(
+    serviceurl + '/api/messages',
+    function(body) {
+      res.render('messages', body);
+    }
+  );
 });
 
 // ALLE MELDINGER
