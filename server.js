@@ -223,3 +223,4 @@ request.get({
 );
 
 app.listen(port);
+console.log("Started!");
