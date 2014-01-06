@@ -60,19 +60,39 @@ app.get('/message/:id', function(req, res) {
   getUrl(
     serviceurl + '/api/messages/' + messageid,
     function(message){
-      enrichMessageWithUser(message, function(message){
+      enrichMessage(message, function(message){
         res.json(message);
       });
     }
   );
 });
 
+function enrichMessage(message, func) {
+  var remainingCalls = 2;
+
+  function decrementAndCommit(){
+    remainingCalls = remainingCalls-1;
+    if (remainingCalls == 0){
+      func(message);
+    }
+  }
+
+  enrichMessageWithLikes(message, decrementAndCommit);
+  enrichMessageWithUser(message, decrementAndCommit);
+}
+
+function enrichMessageWithLikes(message, func) {
+  getUrl(
+    serviceurl + "/api/messages/" + message.id + "/likes",
+    function(likes){
+      message.likes = likes;
+      func(message);
+    });
+}
+
 function enrichMessageWithUser(message, func) {
   var username = message.user.name;
-  console.log("beriker bruker", username);
-
   var userId = get_userId(username);
-  console.log("bruker-id", userId);
 
   getUrl(
     ansattlisteurl + "/employee/" + userId,
