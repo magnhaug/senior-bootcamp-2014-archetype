@@ -4,6 +4,8 @@ var request = require('request');
 var exphbs  = require('express3-handlebars')
 var app = express();
 
+process.setMaxListeners(0);
+
 // if on heroku use heroku port.
 var port = process.env.PORT || 1339;
 var serviceurl = process.env.SERVICE;
