@@ -17,6 +17,7 @@
     "url": "https://github.com/bekk/senior-bootcamp-2014-archetype/issues"
   },
   "dependencies": {
+    "express3-handlebars": "*",
     "express": "~3.4.7",
     "request": "~2.30.0",
     "async": "*"

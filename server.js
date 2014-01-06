@@ -59,29 +59,32 @@ app.get('/message/:id', function(req, res) {
   var messageid = req.params.id;
   getUrl(
     serviceurl + '/api/messages/' + messageid,
-    function(message) {
-
-      var username = message.user.name;
-      console.log("beriker bruker", username);
-
-      var userId = get_userId(username);
-      console.log("bruker-id", userId);
-
-      getUrl(
-        ansattlisteurl + "/employee/" + userId,
-        function(user){
-
-          user = user[0];
-          message.user.avdeling = user.Department;
-          message.user.senioritet = user.Seniority;
-
-          console.log(user);
-          console.log(message);
-          res.json(message);
-        });
+    function(message){
+      enrichMessageWithUser(message, function(message){
+        res.json(message);
+      });
     }
   );
 });
+
+function enrichMessageWithUser(message, func) {
+  var username = message.user.name;
+  console.log("beriker bruker", username);
+
+  var userId = get_userId(username);
+  console.log("bruker-id", userId);
+
+  getUrl(
+    ansattlisteurl + "/employee/" + userId,
+    function(user){
+
+      user = user[0];
+      message.user.avdeling = user.Department;
+      message.user.senioritet = user.Seniority;
+
+      func(message);
+    });
+}
 
 function get_userId(username){
   var navn = username.split(" ");
