@@ -46,10 +46,12 @@ app.get('/gui', function(req, res) {
 
 // ALLE MELDINGER
 app.get('/messages', function(req, res) {
+  console.time("Messages");
   getUrl(
     serviceurl + '/api/messages',
     function(messages) {
     	enrichMessages(messages,function(messages) {
+  		console.timeEnd("Messages");
 	      res.json(messages);
     	});
     }
@@ -59,10 +61,14 @@ app.get('/messages', function(req, res) {
 // ENKELT MELDING
 app.get('/message/:id', function(req, res) {
   var messageid = req.params.id;
+  var timeId = "Message_" + messageid + "_" + (new Date()).getTime(); 
+
+  console.time(timeId);
   getUrl(
     serviceurl + '/api/messages/' + messageid,
     function(message){
       enrichMessage(message, function(message){
+      	console.timeEnd(timeId);
         res.json(message);
       });
     }
@@ -101,17 +107,23 @@ function enrichMessage(message, func) {
 }
 
 function enrichMessageWithLikes(message, func) {
+	var timeId = "Likes_" + message.id + "_" + (new Date()).getTime(); 
+  console.time(timeId);
   getUrl(
     serviceurl + "/api/messages/" + message.id + "/likes",
     function(likes){
       message.likes = likes;
       func(message);
+      console.timeEnd(timeId);
     });
 }
 
 function enrichMessageWithUser(message, func) {
   var username = message.user.name;
   var userId = get_userId(username);
+  var timeId = "User" + message.id + "_" + (new Date()).getTime(); 
+
+  console.time(timeId);
 
   getUrl(
     ansattlisteurl + "/employee/" + userId,
@@ -122,6 +134,7 @@ function enrichMessageWithUser(message, func) {
       message.user.senioritet = user.Seniority;
 
       func(message);
+  		console.timeEnd(timeId);
     });
 }
 
