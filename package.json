@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "express3-handlebars": "*",
+    "memory-cache": "*", 
     "express": "~3.4.7",
     "request": "~2.30.0",
     "async": "*"
