@@ -10,14 +10,14 @@ app.get('/', function(req, res) {
     url: demo_url,
     json: true,
     headers: {
-            'User-Agent': 'request'
-                }
-    }, function(error, response, body) {
-      if(error) {
-        console.log("an error has occured. keep calm and carry on.");
-      }
-      res.json(body);
-    });
+      'User-Agent': 'request'
+    }
+  }, function(error, response, body) {
+    if(error) {
+      console.log("an error has occured. keep calm and carry on.");
+    }
+    res.json(body);
+  });
 
 
 });
