@@ -1,1 +1,33 @@
-<h1>HEI!!</h1>
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>NEI!</title>
+    </head>
+    <body>
+        <section>
+            <h1>Socialcast posts</h1>
+            <ul>
+                {{each posts}}
+                <li>
+                    <section>
+                    <div class="user">
+                        <span>{{user.name}}</span>
+                    </div>
+                    <div class="post">
+                        <p>{{body}}</p>
+                    </div>
+                    <div class="comments">
+                        <ul>
+                            {{each comments}}
+                            <li>{{name}}: {{text}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                    </section>
+                </li>
+                {{/each}}
+            </ul>
+        </section>
+
+    </body>
+</html>
