@@ -121,8 +121,9 @@ function enrichMessageWithLikes(message, func) {
   	var cacheLikes = cache.get(cacheKey);
 
   	if(cacheLikes) {
-		func(message);
-	    console.timeEnd(timeId);
+      message.likes = cacheLikes;
+		  func(message);
+      console.timeEnd(timeId);
   	}else {
 	  getUrl(
 	    serviceurl + "/api/messages/" + message.id + "/likes",
