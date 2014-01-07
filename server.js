@@ -1,4 +1,3 @@
-
 var express = require('express');
 var request = require('request');
 var exphbs = require('express3-handlebars');
@@ -10,20 +9,13 @@ var socialcastService = require('./socialcastService');
 
 var app = express();
 
-process.setMaxListeners(0);
-
-// if on heroku use heroku port.
-var port = process.env.PORT || 1339;
-
-var userpass = process.env.USERPASS;
-
-var demo_url = "https://api.github.com/users/bekkopen/repos";
-
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
-app.use(express.static(__dirname + '/'));
-app.use(express.bodyParser());
 
+app.set('view engine', 'handlebars');
+
+app.use(express.static(__dirname + '/'));
+
+app.use(express.bodyParser());
 
 // GUI
 app.get('/', function (req, res) {
@@ -70,13 +62,6 @@ app.post('/push', function (req, res) {
 
 });
 
-app.get('/pushtest/:id', function (req, res) {
-    var messageId = req.params.id;
-    var message = mongoDb.get(messageId, function (err, message) {
-        if (err) res.send(404, { error: 'No message found' })
-        else res.json(message);
-    });
-});
-
-app.listen(port);
+// if on heroku use heroku port.
+app.listen(process.env.PORT || 1339);
 console.log("Started!");
