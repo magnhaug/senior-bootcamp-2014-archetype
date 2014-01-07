@@ -1,6 +1,7 @@
 
 var ajaxUtil = require('./ajaxUtil');
 var userService = require('./userService');
+var vegvesenService = require('./vegvesenService');
 
 var cache = require('memory-cache');
 
@@ -96,6 +97,7 @@ function enrichMessageWithLikes(message, func) {
     }
 }
 
+
 function enrichMessageWithUser(message, func) {
     var username = message.user.name;
     var userId = userService.getUserId(username);
@@ -105,11 +107,21 @@ function enrichMessageWithUser(message, func) {
         userpass,
         userpass,
         function (user) {
-
-            user = user[0];
+            var user = user[0];
+            var regNr = user.Cars;
+            
             message.user.avdeling = user.Department;
             message.user.senioritet = user.Seniority;
-
-            func(message);
+            message.user.regNr = regNr;
+            
+            if(regNr) {
+                vegvesenService.getCarInfoByRegNr(regNr, function (carInfo) {
+                    message.user.bilmerke = carInfo["Merke og modell"];
+                    message.user.drivstoffType = carInfo.Drivstoff;
+                    func(message);
+                });
+            }else {
+                func(message);
+            }
         });
 }
