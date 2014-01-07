@@ -25,7 +25,7 @@ ul{
 }
 
 .post{
-	margin-bottom: 100px;
+	margin-bottom: 70px;
 }
 
 .user{
@@ -35,13 +35,13 @@ ul{
 
 .text{
 	position: relative;
-	background: rgba(198, 222, 228, 0.61);
+	background:rgba(177, 173, 230, 0.4);
 	padding: 30px;
 }
 
 .text:before, .text:after{
 	content: "\"";
-	color: rgba(198, 222, 228, 0.61);
+	color: rgba(177, 173, 230, 0.6);
 	position: absolute;
 	font-weight: bold;
 	font-weight: bold;
@@ -56,14 +56,14 @@ ul{
 }
 
 .text:after{
-	bottom: -90px;
+	bottom: -85px;
 	right: -30px;
 }
 
 .likes{
-	color: rgb(187, 36, 36);
+	color: rgba(177, 173, 230, 1);
 	font-weight: bold;
-	padding-left: 30px;
+	padding: 0px 30px;
 }
 
 .comments{
@@ -77,4 +77,23 @@ ul{
 
 .commenter-name{
 	font-weight: bold;
+}
+
+.like-user {
+	margin-right: 3px;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.like-user:first-of-type {
+	margin-left: 12px;
+	display: inline-block;
+}
+
+.like-user:after {
+	content: ",";
+}
+
+.like-user:last-of-type:after{
+	content: none;
 }

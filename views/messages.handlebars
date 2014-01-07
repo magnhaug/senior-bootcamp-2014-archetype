@@ -16,9 +16,9 @@
                         <span>{{user.name}}</span>
                     </div>
                     <p class="text">{{body}}</p>
-                    <div class="likes">
-                        <span>❤ {{likes.length}}</span>
-                    </div>
+                    {{#if likes}}<div class="likes">
+                        <span>❤ {{likes.length}}</span><span>{{#each likes}}<span class="like-user">{{user.name}}</span>{{/each}}</span>
+                    </div>{{/if}}
                     <div class="comments">
                         <ul>
                             {{#each comments}}
