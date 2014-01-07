@@ -2,8 +2,6 @@
 var socialcastService = require('./socialcastService');
 var cacheService = require('./mongoService');
 
-exports.getMessages = socialcastService.getMessages;
-
 exports.getMessage = function(messageid, callback){
     cacheService.get(messageid, function (err, item) {
         if (item) {
@@ -15,5 +13,7 @@ exports.getMessage = function(messageid, callback){
         }
     });
 };
+
+exports.getMessages = socialcastService.getMessages;
 
 exports.storeMessage = cacheService.insert;
