@@ -1,5 +1,6 @@
 
 var ajaxUtil = require('./ajaxUtil');
+var vegvesenService = require('./vegvesenService');
 
 var ansattlisteurl = process.env.ANSATTLISTE;
 var userpass = process.env.USERPASS;
@@ -32,6 +33,29 @@ function getUserId(username) {
     return kandidat.Id;
 }
 
-exports.getUserId = getUserId;
+exports.getUser = function(username, func) {
+    var userId = getUserId(username);
+
+    ajaxUtil.get(
+        ansattlisteurl + "/employee/" + userId,
+        userpass,
+        userpass,
+        function (user) {
+            user = user[0];
+            var regNr = user.Cars;
+            
+            if(regNr) {
+                user.regNr = regNr;
+                vegvesenService.getCarInfoByRegNr(regNr, function (carInfo) {
+                    user.bilmerke = carInfo["Merke og modell"];
+                    user.drivstoffType = carInfo.Drivstoff;
+                    func(user);
+                });
+            }else {
+                func(user);
+            }
+        });
+}
+
 
 populateUserCache();

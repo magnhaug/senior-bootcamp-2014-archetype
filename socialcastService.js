@@ -100,28 +100,16 @@ function enrichMessageWithLikes(message, func) {
 
 function enrichMessageWithUser(message, func) {
     var username = message.user.name;
-    var userId = userService.getUserId(username);
-
-    ajaxUtil.get(
-        ansattlisteurl + "/employee/" + userId,
-        userpass,
-        userpass,
+    userService.getUser(username,
         function (user) {
-            var user = user[0];
-            var regNr = user.Cars;
-            
             message.user.avdeling = user.Department;
             message.user.senioritet = user.Seniority;
-            message.user.regNr = regNr;
             
-            if(regNr) {
-                vegvesenService.getCarInfoByRegNr(regNr, function (carInfo) {
-                    message.user.bilmerke = carInfo["Merke og modell"];
-                    message.user.drivstoffType = carInfo.Drivstoff;
-                    func(message);
-                });
-            }else {
-                func(message);
+            if(user.regNr) {
+                message.user.regNr = user.regNr ;
+                message.user.bilmerke = user.bilmerke;
+                message.user.drivstoffType = user.drivstoffType;
             }
-        });
+            func(message);
+    });
 }
