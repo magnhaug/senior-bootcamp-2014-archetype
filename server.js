@@ -3,7 +3,10 @@ var express = require('express');
 var request = require('request');
 var exphbs  = require('express3-handlebars');
 var cache = require('memory-cache');
+var mongoDb = require('./mongoService');
+
 var app = express();
+
 
 process.setMaxListeners(0);
 
@@ -18,8 +21,11 @@ var demo_url = "https://api.github.com/users/bekkopen/repos";
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/'));
+app.use(express.bodyParser());
+
 
 var alle_ansatte = [];
+
 
 // ROT-url
 app.get('/', function(req, res) {
@@ -71,15 +77,43 @@ app.get('/message/:id', function(req, res) {
   var timeId = "Message_" + messageid + "_" + (new Date()).getTime(); 
 
   console.time(timeId);
-  getUrl(
-    serviceurl + '/api/messages/' + messageid,
-    function(message){
-      enrichMessage(message, function(message){
-      	console.timeEnd(timeId);
-        res.json(message);
-      });
+
+  var mongoMessage = mongoDb.get(messageid, function(err, item){
+    if (item) {
+      res.json(item);
+      return
     }
-  );
+    getUrl(
+      serviceurl + '/api/messages/' + messageid,
+      function(message){
+        enrichMessage(message, function(message){
+          console.timeEnd(timeId);
+          res.json(message);
+        });
+      }
+    );
+  });
+});
+
+app.post('/push', function(req, res){
+
+  var message = req.body.data;
+  console.log("Melding ble pushe til oss med id: ", message.id);
+  mongoDb.insert(message, 
+    function(err){
+      res.send(500, { error: 'Couldnt save' })
+  }, function(message){
+    res.json(message);
+  });
+
+});
+
+app.get('/pushtest/:id', function(req, res){
+  var messageId = req.params.id;
+  var message = mongoDb.get(messageId, function(err, message){
+    if (err) res.send(404, { error: 'No message found' })
+    else res.json(message);    
+  });
 });
 
 
